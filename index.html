@@ -4,86 +4,73 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kalkulator Kurs USD IDR</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: satu kartu sempit di tengah. Alur dari atas ke bawah: status kurs, nominal masuk, hasil, kurs yang dipakai. */
+/* Layout: satu kolom sempit. Judul di kiri, dinosaurus berdiri di tepi atas kartu kalkulator. Tampilan terang dengan hijau dino dan kuning untuk hasil. */
 :root {
-  --bg: #eef2f0;
-  --surface: #fbfdfc;
-  --ink: #15231f;
-  --muted: #566661;
-  --line: #d3ddd9;
-  --accent: #0e6b58;
+  --sky: #cdeefa;
+  --bg: #eaf7fb;
+  --surface: #ffffff;
+  --field: #f3fafc;
+  --ink: #12313a;
+  --muted: #476972;
+  --line: #cbe4ec;
+  --accent: #167a4a;
   --accent-ink: #ffffff;
-  --result-bg: #e3eeea;
-  --ok: #0e6b58;
-  --ok-bg: #d9efe6;
+  --result-bg: #fff2bf;
+  --result-line: #f0d273;
+  --chip-bg: #e3f1f6;
+  --ok: #0f6b3f;
+  --ok-bg: #d6f3e2;
   --warn: #7a4e00;
-  --warn-bg: #fbefd2;
-  --err: #a3261f;
+  --warn-bg: #ffe6b0;
+  --err: #b3261e;
+  --ground: #cde8c3;
+  --dino: #3dbb7d;
+  --dino-dark: #279a62;
+  --dino-belly: #c9f0d3;
+  --cheek: #ff9db0;
+  --gold: #ffd24a;
+  --gold-dark: #7a5200;
+  --font-display: "Fredoka", "Instrument Sans", system-ui, sans-serif;
   --font-ui: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-num: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0f1816;
-    --surface: #16221f;
-    --ink: #e6f0ec;
-    --muted: #93a59f;
-    --line: #2a3b37;
-    --accent: #4cc2a5;
-    --accent-ink: #06201a;
-    --result-bg: #1c2d29;
-    --ok: #6fd6bb;
-    --ok-bg: #123329;
-    --warn: #e6b655;
-    --warn-bg: #2b2412;
-    --err: #ff8a80;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0f1816;
-  --surface: #16221f;
-  --ink: #e6f0ec;
-  --muted: #93a59f;
-  --line: #2a3b37;
-  --accent: #4cc2a5;
-  --accent-ink: #06201a;
-  --result-bg: #1c2d29;
-  --ok: #6fd6bb;
-  --ok-bg: #123329;
-  --warn: #e6b655;
-  --warn-bg: #2b2412;
-  --err: #ff8a80;
-  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
 html { color-scheme: light; }
-body { margin: 0; }
+[hidden] { display: none !important; }
 body {
-  background: var(--bg);
+  margin: 0;
+  background: var(--bg) linear-gradient(180deg, var(--sky) 0, var(--bg) 340px) no-repeat;
   color: var(--ink);
   font-family: var(--font-ui);
   font-size: 15px;
   line-height: 1.5;
-  padding-block: 28px 40px;
+  padding-block: 24px 40px;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 .wrap { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
-h1 { font-size: 22px; line-height: 1.2; font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
-.sub { margin: 4px 0 0; color: var(--muted); }
+
+.top { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 12px; margin-bottom: -22px; position: relative; z-index: 0; }
+.top-text { flex: 1 1 200px; min-width: 0; padding-bottom: 30px; }
+h1 { font-family: var(--font-display); font-size: 30px; line-height: 1.1; font-weight: 600; margin: 0; text-wrap: balance; }
+.sub { margin: 8px 0 0; color: var(--muted); max-width: 32ch; }
+.dino { width: min(210px, 52%); height: auto; flex: none; display: block; }
+.coin { animation: bob 3s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 
 .card {
+  position: relative; z-index: 1;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  box-shadow: 0 10px 28px rgba(30, 110, 140, 0.10);
 }
 
 .status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
@@ -91,7 +78,7 @@ h1 { font-size: 22px; line-height: 1.2; font-weight: 600; margin: 0; text-wrap: 
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
   padding: 3px 9px; border-radius: 999px;
-  background: var(--result-bg); color: var(--muted);
+  background: var(--chip-bg); color: var(--muted);
 }
 .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .chip[data-s="live"] { background: var(--ok-bg); color: var(--ok); }
@@ -101,14 +88,14 @@ h1 { font-size: 22px; line-height: 1.2; font-weight: 600; margin: 0; text-wrap: 
 label { font-size: 13px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 6px; }
 .field {
   display: flex; align-items: stretch;
-  border: 1px solid var(--line); border-radius: 10px; background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; background: var(--field);
   overflow: hidden;
 }
 .field:focus-within { border-color: var(--accent); outline: 2px solid var(--accent); outline-offset: 1px; }
 .cur {
   display: flex; align-items: center; padding: 0 14px;
   font-family: var(--font-num); font-weight: 500; font-size: 14px; color: var(--muted);
-  border-right: 1px solid var(--line); background: var(--result-bg);
+  border-right: 1px solid var(--line); background: var(--chip-bg);
 }
 .field input {
   flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink);
@@ -124,7 +111,7 @@ label { font-size: 13px; font-weight: 600; color: var(--muted); display: block; 
 button {
   font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
   border: 1px solid var(--line); background: var(--surface); color: var(--ink);
-  border-radius: 8px; padding: 8px 12px; min-height: 38px;
+  border-radius: 999px; padding: 8px 14px; min-height: 38px;
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
 }
 button:hover:not(:disabled) { border-color: var(--accent); }
@@ -133,7 +120,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 button svg { width: 16px; height: 16px; flex: none; }
 
-.result { background: var(--result-bg); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+.result { background: var(--result-bg); border: 1px solid var(--result-line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 4px; }
 .result .lbl { font-size: 13px; font-weight: 600; color: var(--muted); }
 .result .big { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
 .result .big .unit { font-family: var(--font-num); font-size: 16px; color: var(--muted); }
@@ -160,9 +147,34 @@ output {
 <body>
 
 <main class="wrap">
-  <header>
-    <h1>Kurs USD ke Rupiah</h1>
-    <p class="sub">Hitung nominal invoice dari dollar ke rupiah tanpa hitung manual.</p>
+  <header class="top">
+    <div class="top-text">
+      <h1>Kurs USD ke Rupiah</h1>
+      <p class="sub">Hitung nominal invoice dari dollar ke rupiah tanpa hitung manual.</p>
+    </div>
+    <svg class="dino" viewBox="0 0 220 134" role="img" aria-label="Dinosaurus hijau yang bersahabat dengan koin dollar melayang di dekatnya">
+      <ellipse cx="108" cy="130" rx="86" ry="4" fill="var(--ground)"/>
+      <rect x="74" y="94" width="17" height="34" rx="8.5" fill="var(--dino-dark)"/>
+      <rect x="130" y="94" width="17" height="34" rx="8.5" fill="var(--dino-dark)"/>
+      <path d="M62 74 C40 78 22 90 8 108 C26 104 46 98 66 94 Z" fill="var(--dino)"/>
+      <ellipse cx="102" cy="78" rx="54" ry="28" fill="var(--dino)"/>
+      <ellipse cx="104" cy="90" rx="40" ry="12" fill="var(--dino-belly)"/>
+      <circle cx="82" cy="68" r="6" fill="var(--dino-dark)" fill-opacity="0.35"/>
+      <circle cx="102" cy="62" r="5" fill="var(--dino-dark)" fill-opacity="0.35"/>
+      <circle cx="122" cy="68" r="6" fill="var(--dino-dark)" fill-opacity="0.35"/>
+      <path d="M140 66 C158 60 168 48 172 30" fill="none" stroke="var(--dino)" stroke-width="22" stroke-linecap="round"/>
+      <ellipse cx="180" cy="26" rx="18" ry="13" fill="var(--dino)"/>
+      <circle cx="186" cy="22" r="3.6" fill="var(--ink)"/>
+      <circle cx="187.2" cy="20.8" r="1.1" fill="#ffffff"/>
+      <circle cx="177" cy="31" r="3" fill="var(--cheek)"/>
+      <path d="M186 31 q7 4 13 -1" stroke="var(--ink)" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <rect x="60" y="96" width="17" height="32" rx="8.5" fill="var(--dino)"/>
+      <rect x="116" y="96" width="17" height="32" rx="8.5" fill="var(--dino)"/>
+      <g class="coin">
+        <circle cx="46" cy="40" r="15" fill="var(--gold)" stroke="var(--gold-dark)" stroke-width="3"/>
+        <text x="46" y="46" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-weight="500" font-size="18" fill="var(--gold-dark)">$</text>
+      </g>
+    </svg>
   </header>
 
   <section class="card" aria-label="Kalkulator">
