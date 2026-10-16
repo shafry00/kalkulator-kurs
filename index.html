@@ -57,7 +57,22 @@ body {
 .top-text { flex: 1 1 200px; min-width: 0; padding-bottom: 30px; }
 h1 { font-family: var(--font-display); font-size: 30px; line-height: 1.1; font-weight: 600; margin: 0; text-wrap: balance; }
 .sub { margin: 8px 0 0; color: var(--muted); max-width: 32ch; }
-.dino { width: min(210px, 52%); height: auto; flex: none; display: block; }
+.dino { width: min(210px, 52%); height: auto; flex: none; display: block; overflow: visible; }
+.dino-body, .dino-shadow { transform-box: fill-box; transform-origin: 50% 100%; }
+.dino-body { animation: hop 1.4s infinite; }
+.dino-shadow { animation: hop-shadow 1.4s infinite; transform-origin: 50% 50%; }
+@keyframes hop {
+  0%, 100% { transform: translateY(0) scale(1, 1); animation-timing-function: ease-out; }
+  12% { transform: translateY(0) scale(1.06, 0.92); animation-timing-function: ease-out; }
+  40% { transform: translateY(-30px) scale(0.96, 1.05); animation-timing-function: ease-in; }
+  68% { transform: translateY(0) scale(0.96, 1.05); }
+  76% { transform: translateY(0) scale(1.07, 0.9); }
+  88% { transform: translateY(0) scale(1, 1); }
+}
+@keyframes hop-shadow {
+  0%, 100%, 68%, 88% { transform: scale(1); opacity: 1; }
+  40% { transform: scale(0.7); opacity: 0.5; }
+}
 .coin { animation: bob 3s ease-in-out infinite; }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 
@@ -153,7 +168,8 @@ output {
       <p class="sub">Hitung nominal invoice dari dollar ke rupiah tanpa hitung manual.</p>
     </div>
     <svg class="dino" viewBox="0 0 220 134" role="img" aria-label="Dinosaurus hijau yang bersahabat dengan koin dollar melayang di dekatnya">
-      <ellipse cx="108" cy="130" rx="86" ry="4" fill="var(--ground)"/>
+      <ellipse class="dino-shadow" cx="108" cy="130" rx="86" ry="4" fill="var(--ground)"/>
+      <g class="dino-body">
       <rect x="74" y="94" width="17" height="34" rx="8.5" fill="var(--dino-dark)"/>
       <rect x="130" y="94" width="17" height="34" rx="8.5" fill="var(--dino-dark)"/>
       <path d="M62 74 C40 78 22 90 8 108 C26 104 46 98 66 94 Z" fill="var(--dino)"/>
@@ -170,6 +186,7 @@ output {
       <path d="M186 31 q7 4 13 -1" stroke="var(--ink)" stroke-width="2" fill="none" stroke-linecap="round"/>
       <rect x="60" y="96" width="17" height="32" rx="8.5" fill="var(--dino)"/>
       <rect x="116" y="96" width="17" height="32" rx="8.5" fill="var(--dino)"/>
+      </g>
       <g class="coin">
         <circle cx="46" cy="40" r="15" fill="var(--gold)" stroke="var(--gold-dark)" stroke-width="3"/>
         <text x="46" y="46" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-weight="500" font-size="18" fill="var(--gold-dark)">$</text>
